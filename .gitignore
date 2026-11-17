@@ -1,0 +1,19 @@
+# Java / Maven / Gradle
+target/
+build/
+*.class
+# Node / Angular
+node_modules/
+dist/
+.angular/
+# IDE
+.idea/
+.vscode/
+*.iml
+# Secrets and env (never commit API keys)
+.env
+*.env
+application-local.properties
+# OS
+.DS_Store
+Thumbs.db
