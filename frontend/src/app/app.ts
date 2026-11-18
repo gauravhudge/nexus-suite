@@ -1,12 +1,37 @@
-import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, inject, signal } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+
+interface Organization {
+  id: number;
+  name: string;
+  createdAt: string;
+}
 
 @Component({
-  imports: [RouterOutlet],
   selector: 'app-root',
-  styleUrl: './app.scss',
   templateUrl: './app.html',
+  styleUrl: './app.scss',
 })
 export class App {
-  protected readonly title = signal('frontend');
+  private http = inject(HttpClient);
+  private api = 'http://localhost:8080/api/organizations';
+
+  organizations = signal<Organization[]>([]);
+  error = signal('');
+
+  constructor() {
+    this.load();
+  }
+
+  load() {
+    this.http.get<Organization[]>(this.api).subscribe({
+      next: (data) => this.organizations.set(data),
+      error: () => this.error.set('Cannot reach the backend. Is it running?'),
+    });
+  }
+
+  add(name: string) {
+    if (!name.trim()) return;
+    this.http.post(this.api, { name }).subscribe(() => this.load());
+  }
 }
